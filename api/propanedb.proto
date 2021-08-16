@@ -1,0 +1,49 @@
+
+
+syntax = "proto3";
+
+import "google/protobuf/any.proto";
+import "google/protobuf/descriptor.proto";
+
+option java_multiple_files = true;
+option java_package = "propane";
+option java_outer_classname = "PropaneProto";
+option objc_class_prefix = "Prop";
+option go_package = "pb/";
+
+package propane;
+
+service Database {
+  rpc CreateDatabase(PropaneDatabase) returns (PropaneStatus) {} 
+  rpc Put (PropaneEntity) returns (PropaneId) {}
+  rpc Get (PropaneId) returns (PropaneEntity) {}
+  rpc Delete (PropaneId) returns (PropaneStatus) {}
+  rpc Search (PropaneSearch) returns (PropaneEntities) {}
+}
+
+message PropaneDatabase{
+  string name = 1;
+  google.protobuf.FileDescriptorSet descriptor_set = 2;
+}
+
+message PropaneEntities {
+  repeated PropaneEntity entities = 1;
+}
+
+message PropaneEntity {
+  google.protobuf.Any data = 1;
+}
+
+message PropaneStatus {
+  string statusMessage = 1;
+}
+
+message PropaneId{
+  string id = 1;
+}
+
+message PropaneSearch {
+  string entityType = 1;
+  string query = 2;
+  
+}
