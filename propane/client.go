@@ -3,6 +3,8 @@ package propane
 import (
 	"context"
 
+	log "github.com/sirupsen/logrus"
+
 	"github.com/elan8/propanedb-go-driver/pb"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/descriptorpb"
@@ -17,11 +19,11 @@ func Connect(ctx context.Context, serverAddress string, databaseName string, des
 
 	client := &Client{}
 
-	var opts []grpc.DialOption
-	conn, err := grpc.Dial(serverAddress, opts...)
+	//var opts []grpc.DialOption
+	conn, err := grpc.Dial(serverAddress, grpc.WithInsecure())
 	client.conn = conn
 	if err != nil {
-
+		log.Fatalf("Error: %s", err)
 	}
 
 	client.dbClient = pb.NewDatabaseClient(client.conn)
@@ -30,7 +32,9 @@ func Connect(ctx context.Context, serverAddress string, databaseName string, des
 	db.Name = databaseName
 	db.DescriptorSet = descriptorSet
 	_, err = client.dbClient.CreateDatabase(ctx, db)
-	//status.StatusMessage
+	if err != nil {
+		log.Fatalf("Error: %s", err)
+	}
 	return client, err
 
 }

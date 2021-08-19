@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+option go_package = "pb/";
+
+package test;
+
+message TodoItem{
+    string id = 1;
+    string description = 2;
+    bool isDone =3 ;
+  }
