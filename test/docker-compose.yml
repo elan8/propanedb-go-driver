@@ -2,3 +2,5 @@ version: "3.9"
 services:
   propane:
     image: "jevon82/propanedb:latest"
+    ports:
+      - "50051:50051"

@@ -42,3 +42,15 @@ func Connect(ctx context.Context, serverAddress string, databaseName string, des
 func (c *Client) Disconnect(ctx context.Context) error {
 	return c.conn.Close()
 }
+
+func (c *Client) Put(ctx context.Context, entity *pb.PropaneEntity) (id *pb.PropaneId, err error) {
+	return c.dbClient.Put(ctx, entity)
+}
+
+func (c *Client) Get(ctx context.Context, id *pb.PropaneId) (entity *pb.PropaneEntity, err error) {
+	return c.dbClient.Get(ctx, id)
+}
+
+func (c *Client) Delete(ctx context.Context, id *pb.PropaneId) (status *pb.PropaneStatus, err error) {
+	return c.dbClient.Delete(ctx, id)
+}

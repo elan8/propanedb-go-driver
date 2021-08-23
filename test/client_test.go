@@ -3,13 +3,17 @@ package test
 import (
 	"context"
 	"io/ioutil"
+	"os"
 	"testing"
+	"time"
 
 	log "github.com/sirupsen/logrus"
 
+	"github.com/elan8/propanedb-go-driver/pb"
 	"github.com/elan8/propanedb-go-driver/propane"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/descriptorpb"
+	"google.golang.org/protobuf/types/known/anypb"
 )
 
 func TestMain(m *testing.M) {
@@ -37,14 +41,16 @@ func TestMain(m *testing.M) {
 	// 	log.Fatalf("Could not connect to docker: %s", err)
 	// }
 
-	// code := m.Run()
+	time.Sleep(4 * time.Second)
+
+	code := m.Run()
 
 	// // You can't defer this because os.Exit doesn't care for defer
 	// if err := pool.Purge(resource); err != nil {
 	// 	log.Fatalf("Could not purge resource: %s", err)
 	// }
 
-	// os.Exit(code)
+	os.Exit(code)
 }
 
 func TestConnect(t *testing.T) {
@@ -65,6 +71,48 @@ func TestConnect(t *testing.T) {
 		log.Fatalf("Error: %s", err)
 	}
 	log.Print(client)
+
+	item := &pb.TodoItem{}
+	item.Description = "Test 1"
+	item.IsDone = false
+	entity1 := &pb.PropaneEntity{}
+	any, err := anypb.New(item)
+	if err != nil {
+		log.Fatalf("Error: %s", err)
+	}
+	entity1.Data = any
+	id1, err := client.Put(ctx, entity1)
+
+	entity2, err := client.Get(ctx, id1)
+
+	if err != nil {
+		log.Fatalf("Error: %s", err)
+	}
+	log.Printf("Entity: %s", entity2.String())
+
+	m := new(pb.TodoItem)
+	if err := any.UnmarshalTo(m); err != nil {
+		log.Fatalf("Error: %s", err)
+		t.Errorf("Cannot unmarshal to pb.TodoItem")
+	}
+
+	if m.Description != "Test 1" {
+		t.Errorf("expected 'Test 1', got '%s'", m.Description)
+	}
+
+	status, err := client.Delete(ctx, id1)
+	log.Printf("Delete Status: %s", status.GetStatusMessage())
+	if err != nil {
+		log.Fatalf("Error: %s", err)
+	}
+
+	// delete same entity again --> should result in error
+	status, err = client.Delete(ctx, id1)
+	log.Printf("Error due to double delete: %s", err)
+	if err == nil {
+		log.Fatalf("Double delete should result in error")
+	}
+
 	err = client.Disconnect(ctx)
 	if err != nil {
 		log.Fatalf("Error: %s", err)
