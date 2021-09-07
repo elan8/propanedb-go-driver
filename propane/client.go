@@ -5,14 +5,13 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/elan8/propanedb-go-driver/pb"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/descriptorpb"
 )
 
 type Client struct {
 	conn     *grpc.ClientConn
-	dbClient pb.DatabaseClient
+	dbClient DatabaseClient
 }
 
 func Connect(ctx context.Context, serverAddress string, databaseName string, descriptorSet *descriptorpb.FileDescriptorSet) (*Client, error) {
@@ -26,9 +25,9 @@ func Connect(ctx context.Context, serverAddress string, databaseName string, des
 		log.Fatalf("Error: %s", err)
 	}
 
-	client.dbClient = pb.NewDatabaseClient(client.conn)
+	client.dbClient = NewDatabaseClient(client.conn)
 
-	db := &pb.PropaneDatabase{}
+	db := &PropaneDatabase{}
 	db.Name = databaseName
 	db.DescriptorSet = descriptorSet
 	_, err = client.dbClient.CreateDatabase(ctx, db)
@@ -43,14 +42,14 @@ func (c *Client) Disconnect(ctx context.Context) error {
 	return c.conn.Close()
 }
 
-func (c *Client) Put(ctx context.Context, entity *pb.PropaneEntity) (id *pb.PropaneId, err error) {
+func (c *Client) Put(ctx context.Context, entity *PropaneEntity) (id *PropaneId, err error) {
 	return c.dbClient.Put(ctx, entity)
 }
 
-func (c *Client) Get(ctx context.Context, id *pb.PropaneId) (entity *pb.PropaneEntity, err error) {
+func (c *Client) Get(ctx context.Context, id *PropaneId) (entity *PropaneEntity, err error) {
 	return c.dbClient.Get(ctx, id)
 }
 
-func (c *Client) Delete(ctx context.Context, id *pb.PropaneId) (status *pb.PropaneStatus, err error) {
+func (c *Client) Delete(ctx context.Context, id *PropaneId) (status *PropaneStatus, err error) {
 	return c.dbClient.Delete(ctx, id)
 }
