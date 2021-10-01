@@ -27,4 +27,4 @@ jobs:
       # - name: Generate
       #   run: ./scripts/generate.sh
       - name: Run unit test
-        run: cd ./scripts/ && ./test.sh
+        run: ./scripts/test.sh
