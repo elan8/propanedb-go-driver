@@ -53,3 +53,7 @@ func (c *Client) Get(ctx context.Context, id *PropaneId) (entity *PropaneEntity,
 func (c *Client) Delete(ctx context.Context, id *PropaneId) (status *PropaneStatus, err error) {
 	return c.dbClient.Delete(ctx, id)
 }
+
+func (c *Client) Search(ctx context.Context, input *PropaneSearch) (output *PropaneEntities, err error) {
+	return c.dbClient.Search(ctx, input)
+}

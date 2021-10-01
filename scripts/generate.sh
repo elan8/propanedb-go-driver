@@ -1,4 +1,4 @@
-cd ..
+
 
 FILE=./api/propanedb.proto
 if [ -f "$FILE" ]; then
