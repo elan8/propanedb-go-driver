@@ -3,6 +3,7 @@ package propane
 import (
 	"context"
 
+	"github.com/elan8/propanedb-go-driver/pb"
 	log "github.com/sirupsen/logrus"
 
 	"google.golang.org/grpc"
@@ -11,7 +12,7 @@ import (
 
 type Client struct {
 	conn     *grpc.ClientConn
-	dbClient DatabaseClient
+	dbClient pb.DatabaseClient
 }
 
 func Connect(ctx context.Context, serverAddress string, databaseName string, descriptorSet *descriptorpb.FileDescriptorSet) (*Client, error) {
@@ -24,16 +25,16 @@ func Connect(ctx context.Context, serverAddress string, databaseName string, des
 	if err != nil {
 		log.Fatalf("Error: %s", err)
 	}
+	//pb.NewDatabaseClient()
+	client.dbClient = pb.NewDatabaseClient(client.conn)
 
-	client.dbClient = NewDatabaseClient(client.conn)
-
-	db := &PropaneDatabase{}
-	db.Name = databaseName
-	db.DescriptorSet = descriptorSet
-	_, err = client.dbClient.CreateDatabase(ctx, db)
-	if err != nil {
-		log.Fatalf("Error: %s", err)
-	}
+	// db := &PropaneDatabase{}
+	// db.Name = databaseName
+	// db.DescriptorSet = descriptorSet
+	// _, err = client.dbClient.CreateDatabase(ctx, db)
+	// if err != nil {
+	// 	log.Fatalf("Error: %s", err)
+	// }
 	return client, err
 
 }
@@ -42,18 +43,28 @@ func (c *Client) Disconnect(ctx context.Context) error {
 	return c.conn.Close()
 }
 
-func (c *Client) Put(ctx context.Context, entity *PropaneEntity) (id *PropaneId, err error) {
-	return c.dbClient.Put(ctx, entity)
+// rpc CreateDatabase(PropaneDatabase) returns (PropaneStatus) {}
+func (c *Client) CreateDatabase(ctx context.Context, db *pb.PropaneDatabase) (status *pb.PropaneStatus, err error) {
+
+	return c.dbClient.CreateDatabase(ctx, db)
+	// if err != nil {
+	// 	log.Fatalf("Error: %s", err)
+	// }
+	//return c.dbClient.Put(ctx, entity)
 }
 
-func (c *Client) Get(ctx context.Context, id *PropaneId) (entity *PropaneEntity, err error) {
+func (c *Client) Put(ctx context.Context, put *pb.PropanePut) (id *pb.PropaneId, err error) {
+	return c.dbClient.Put(ctx, put)
+}
+
+func (c *Client) Get(ctx context.Context, id *pb.PropaneId) (entity *pb.PropaneEntity, err error) {
 	return c.dbClient.Get(ctx, id)
 }
 
-func (c *Client) Delete(ctx context.Context, id *PropaneId) (status *PropaneStatus, err error) {
+func (c *Client) Delete(ctx context.Context, id *pb.PropaneId) (status *pb.PropaneStatus, err error) {
 	return c.dbClient.Delete(ctx, id)
 }
 
-func (c *Client) Search(ctx context.Context, input *PropaneSearch) (output *PropaneEntities, err error) {
+func (c *Client) Search(ctx context.Context, input *pb.PropaneSearch) (output *pb.PropaneEntities, err error) {
 	return c.dbClient.Search(ctx, input)
 }

@@ -75,13 +75,15 @@ func TestConnect(t *testing.T) {
 	item := &pb.TodoItem{}
 	item.Description = "Test 1"
 	item.IsDone = false
-	entity1 := &propane.PropaneEntity{}
+	entity1 := &pb.PropaneEntity{}
+	put := &pb.PropanePut{}
 	any, err := anypb.New(item)
 	if err != nil {
 		log.Fatalf("Error: %s", err)
 	}
 	entity1.Data = any
-	id1, err := client.Put(ctx, entity1)
+	put.Entity = entity1
+	id1, err := client.Put(ctx, put)
 
 	entity2, err := client.Get(ctx, id1)
 
