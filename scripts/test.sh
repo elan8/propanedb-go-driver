@@ -1,4 +1,5 @@
-
-cd ./github_test
-docker pull ghcr.io/elan8/propanedb:latest
-go test
+cd ./development_test
+docker-compose up -d  
+sleep 2
+go test 
+docker-compose down
