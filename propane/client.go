@@ -3,7 +3,6 @@ package propane
 import (
 	"context"
 
-	"github.com/elan8/propanedb-go-driver/pb"
 	log "github.com/sirupsen/logrus"
 
 	"google.golang.org/grpc"
@@ -13,7 +12,7 @@ import (
 
 type Client struct {
 	conn     *grpc.ClientConn
-	dbClient pb.DatabaseClient
+	dbClient DatabaseClient
 }
 
 func Connect(ctx context.Context, serverAddress string) (*Client, error) {
@@ -26,8 +25,8 @@ func Connect(ctx context.Context, serverAddress string) (*Client, error) {
 	if err != nil {
 		log.Fatalf("Error: %s", err)
 	}
-	//pb.NewDatabaseClient()
-	client.dbClient = pb.NewDatabaseClient(client.conn)
+	//NewDatabaseClient()
+	client.dbClient = NewDatabaseClient(client.conn)
 
 	// db := &PropaneDatabase{}
 	// db.Name = databaseName
@@ -45,7 +44,7 @@ func (c *Client) Disconnect(ctx context.Context) error {
 }
 
 // rpc CreateDatabase(PropaneDatabase) returns (PropaneStatus) {}
-func (c *Client) CreateDatabase(ctx context.Context, db *pb.PropaneDatabase) (statusOut *pb.PropaneStatus, err error) {
+func (c *Client) CreateDatabase(ctx context.Context, db *PropaneDatabase) (statusOut *PropaneStatus, err error) {
 
 	if db.DatabaseName == "" {
 		err := status.Error(codes.NotFound, "Database name is empty")
@@ -59,7 +58,7 @@ func (c *Client) CreateDatabase(ctx context.Context, db *pb.PropaneDatabase) (st
 	//return c.dbClient.Put(ctx, entity)
 }
 
-func (c *Client) Put(ctx context.Context, put *pb.PropanePut) (id *pb.PropaneId, err error) {
+func (c *Client) Put(ctx context.Context, put *PropanePut) (id *PropaneId, err error) {
 	if put.DatabaseName == "" {
 		err := status.Error(codes.NotFound, "Database name is empty")
 		return nil, err
@@ -67,7 +66,7 @@ func (c *Client) Put(ctx context.Context, put *pb.PropanePut) (id *pb.PropaneId,
 	return c.dbClient.Put(ctx, put)
 }
 
-func (c *Client) Get(ctx context.Context, id *pb.PropaneId) (entity *pb.PropaneEntity, err error) {
+func (c *Client) Get(ctx context.Context, id *PropaneId) (entity *PropaneEntity, err error) {
 	if id.DatabaseName == "" {
 		err := status.Error(codes.NotFound, "Database name is empty")
 		return nil, err
@@ -75,7 +74,7 @@ func (c *Client) Get(ctx context.Context, id *pb.PropaneId) (entity *pb.PropaneE
 	return c.dbClient.Get(ctx, id)
 }
 
-func (c *Client) Delete(ctx context.Context, id *pb.PropaneId) (statusOut *pb.PropaneStatus, err error) {
+func (c *Client) Delete(ctx context.Context, id *PropaneId) (statusOut *PropaneStatus, err error) {
 	if id.DatabaseName == "" {
 		err := status.Error(codes.NotFound, "Database name is empty")
 		return nil, err
@@ -83,7 +82,7 @@ func (c *Client) Delete(ctx context.Context, id *pb.PropaneId) (statusOut *pb.Pr
 	return c.dbClient.Delete(ctx, id)
 }
 
-func (c *Client) Search(ctx context.Context, input *pb.PropaneSearch) (output *pb.PropaneEntities, err error) {
+func (c *Client) Search(ctx context.Context, input *PropaneSearch) (output *PropaneEntities, err error) {
 	if input.DatabaseName == "" {
 		err := status.Error(codes.NotFound, "Database name is empty")
 		return nil, err

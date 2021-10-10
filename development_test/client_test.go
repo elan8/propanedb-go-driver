@@ -10,7 +10,6 @@ import (
 
 	//log "github.com/sirupsen/logrus"
 
-	"github.com/elan8/propanedb-go-driver/pb"
 	"github.com/elan8/propanedb-go-driver/propane"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/descriptorpb"
@@ -65,12 +64,11 @@ func TestMain(m *testing.M) {
 
 	os.Exit(code)
 }
-
 func TestConnect(t *testing.T) {
 	databaseName := "test"
 	ctx := context.Background()
 
-	b, err := ioutil.ReadFile("../pb/test.bin")
+	b, err := ioutil.ReadFile("../propane/test.bin")
 	if err != nil {
 		log.Fatalf("Error: %s", err)
 	}
@@ -83,7 +81,7 @@ func TestConnect(t *testing.T) {
 		log.Fatalf("Error: %s", err)
 	}
 
-	db := &pb.PropaneDatabase{}
+	db := &propane.PropaneDatabase{}
 	db.DatabaseName = databaseName
 	db.DescriptorSet = fds
 
@@ -94,11 +92,11 @@ func TestConnect(t *testing.T) {
 	}
 
 	//add item 1
-	item1 := &pb.TodoItem{}
+	item1 := &propane.TodoItem{}
 	item1.Description = "Test 1"
 	item1.IsDone = false
-	entity1 := &pb.PropaneEntity{}
-	put := &pb.PropanePut{}
+	entity1 := &propane.PropaneEntity{}
+	put := &propane.PropanePut{}
 	any, err := anypb.New(item1)
 	if err != nil {
 		log.Fatalf("Error: %s", err)
@@ -113,11 +111,11 @@ func TestConnect(t *testing.T) {
 	log.Print("Id1=" + id1.Id)
 
 	//add item 2
-	item2 := &pb.TodoItem{}
+	item2 := &propane.TodoItem{}
 	item2.Description = "Test 2"
 	item2.IsDone = true
-	entity2 := &pb.PropaneEntity{}
-	put2 := &pb.PropanePut{}
+	entity2 := &propane.PropaneEntity{}
+	put2 := &propane.PropanePut{}
 	any2, err := anypb.New(item2)
 	if err != nil {
 		log.Fatalf("Error: %s", err)
@@ -142,10 +140,10 @@ func TestConnect(t *testing.T) {
 	log.Printf("Entity 1: %s", entity3.String())
 
 	any = entity3.Data
-	m := new(pb.TodoItem)
+	m := new(propane.TodoItem)
 	if err := any.UnmarshalTo(m); err != nil {
 		log.Fatalf("Error: %s", err)
-		t.Errorf("Cannot unmarshal to pb.TodoItem")
+		t.Errorf("Cannot unmarshal to TodoItem")
 	}
 
 	if m.Description != "Test 1" {
@@ -153,7 +151,7 @@ func TestConnect(t *testing.T) {
 	}
 
 	//get all items
-	input := pb.PropaneSearch{}
+	input := propane.PropaneSearch{}
 	input.DatabaseName = databaseName
 	input.EntityType = "test.TodoItem"
 	input.Query = "*"

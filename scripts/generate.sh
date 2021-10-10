@@ -20,7 +20,7 @@ docker run --rm -v $(pwd):$(pwd) -w $(pwd) jevon82/golang-builder-alpine  \
 /bin/sh -c "protoc  --go_out=:. --go-grpc_out=:. -I.  ./api/propanedb.proto"
 
 docker run --rm -v $(pwd):$(pwd) -w $(pwd) jevon82/golang-builder-alpine  \
-/bin/sh -c "protoc  --go_out=:. --go-grpc_out=:. --descriptor_set_out=./pb/test.bin -I.  ./api/test.proto"
+/bin/sh -c "protoc  --go_out=:. --go-grpc_out=:. --descriptor_set_out=./propane/test.bin -I.  ./api/test.proto"
 
 # update file ownership
 docker run --rm -v $(pwd):$(pwd) -w $(pwd) jevon82/golang-builder-alpine  \
