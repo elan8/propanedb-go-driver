@@ -4,6 +4,6 @@ services:
     image: "ghcr.io/elan8/propanedb:latest"
     ports:
       - "50051:50051"
-  # client:
+  # testclient:
   #   image: "propanedb-go-driver/test:latest"
  
