@@ -1,6 +1,9 @@
 version: "3.9"
 services:
-  propane:
+  propaneDB:
     image: "ghcr.io/elan8/propanedb:latest"
     ports:
       - "50051:50051"
+  # client:
+  #   image: "propanedb-go-driver/test:latest"
+ 
