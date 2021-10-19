@@ -14,7 +14,6 @@ import (
 	"github.com/ory/dockertest"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/descriptorpb"
-	"google.golang.org/protobuf/types/known/anypb"
 )
 
 var port string
@@ -106,16 +105,6 @@ func TestConnect(t *testing.T) {
 	//add item 1
 	item1 := &propane.TestEntity{}
 	item1.Description = "Test 1"
-
-	// entity1 := &propane.PropaneEntity{}
-	// put := &propane.PropanePut{}
-	// any, err := anypb.New(item1)
-	// if err != nil {
-	// 	log.Fatalf("Error: %s", err)
-	// }
-	// entity1.Data = any
-	// put.Entity = entity1
-	// put.DatabaseName = databaseName
 	id1, err := client.Put(ctx, databaseName, item1)
 	if err != nil {
 		t.Fatalf("Error: %s", err)
@@ -125,16 +114,6 @@ func TestConnect(t *testing.T) {
 	//add item 2
 	item2 := &propane.TestEntity{}
 	item2.Description = "Test 2"
-
-	// entity2 := &propane.PropaneEntity{}
-	// put2 := &propane.PropanePut{}
-	// any2, err := anypb.New(item2)
-	// if err != nil {
-	// 	log.Fatalf("Error: %s", err)
-	// }
-	// entity2.Data = any2
-	// put2.Entity = entity2
-	// put2.DatabaseName = databaseName
 	id2, err := client.Put(ctx, databaseName, item2)
 	if err != nil {
 		t.Fatalf("Error: %s", err)
@@ -142,51 +121,37 @@ func TestConnect(t *testing.T) {
 	log.Print("Id2=" + id2)
 
 	//get item 1
-
-	propaneId := &propane.PropaneId{}
-	propaneId.DatabaseName = databaseName
-	propaneId.Id = id1
-	entity3, err := client.Get(ctx, propaneId)
+	entity3, err := client.Get(ctx, databaseName, id1)
 
 	if err != nil {
 		t.Fatalf("Error: %s", err)
 	}
-	log.Printf("Entity 1: %s", entity3.String())
+	log.Printf("Entity 3: %s", entity3)
 
-	any, err := anypb.New(item1)
-	m := new(propane.TestEntity)
-	if err := any.UnmarshalTo(m); err != nil {
-		log.Fatalf("Error: %s", err)
-		t.Errorf("Cannot unmarshal to TestEntity")
-	}
+	m := entity3.(*propane.TestEntity)
 
 	if m.Description != "Test 1" {
 		t.Errorf("expected 'Test 1', got '%s'", m.Description)
 	}
 
-	//get all items
-	input := propane.PropaneSearch{}
-	input.DatabaseName = databaseName
-	input.EntityType = "test.TestEntity"
-	input.Query = "*"
+	entities, err := client.Search(ctx, databaseName, "test.TestEntity", "*")
+	if err != nil {
+		t.Errorf("Error: %s", err)
+	}
 
-	entities, err := client.Search(ctx, &input)
-
-	if len(entities.Entities) != 2 {
-		t.Errorf("expected length = 2, got '%d'", len(entities.Entities))
+	if len(entities) != 2 {
+		t.Errorf("expected length = 2, got '%d'", len(entities))
 	}
 
 	log.Print("Get all entities")
-	for _, myEntity := range entities.GetEntities() {
-		log.Printf("Entity: %s", myEntity.String())
+	for _, myEntity := range entities {
+		log.Printf("Entity: %s", myEntity)
 	}
 
 	//delete item 1
-
-	status, err := client.Delete(ctx, propaneId)
-	log.Printf("Delete Status: %s", status.GetStatusMessage())
+	err = client.Delete(ctx, databaseName, id1)
 	if err != nil {
-		log.Fatalf("Error: %s", err)
+		t.Errorf("Error: %s", err)
 	}
 
 	err = client.Disconnect(ctx)

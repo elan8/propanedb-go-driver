@@ -20,37 +20,24 @@ func InitLog(debugMode bool) {
 		log.SetLevel(log.DebugLevel)
 	} else {
 		log.SetLevel(log.WarnLevel)
-
 	}
-
 }
 
 type Client struct {
-	conn         *grpc.ClientConn
-	dbClient     DatabaseClient
-	databaseName string
+	conn     *grpc.ClientConn
+	dbClient DatabaseClient
 }
 
 func Connect(ctx context.Context, serverAddress string) (*Client, error) {
 
 	client := &Client{}
 	InitLog(true)
-	//var opts []grpc.DialOption
 	conn, err := grpc.Dial(serverAddress, grpc.WithInsecure())
 	client.conn = conn
 	if err != nil {
 		log.Fatalf("Error: %s", err)
 	}
-	//NewDatabaseClient()
 	client.dbClient = NewDatabaseClient(client.conn)
-
-	// db := &PropaneDatabase{}
-	// db.Name = databaseName
-	// db.DescriptorSet = descriptorSet
-	// _, err = client.dbClient.CreateDatabase(ctx, db)
-	// if err != nil {
-	// 	log.Fatalf("Error: %s", err)
-	// }
 	return client, err
 
 }
@@ -61,17 +48,11 @@ func (c *Client) Disconnect(ctx context.Context) error {
 
 // rpc CreateDatabase(PropaneDatabase) returns (PropaneStatus) {}
 func (c *Client) CreateDatabase(ctx context.Context, db *PropaneDatabase) (statusOut *PropaneStatus, err error) {
-
 	if db.DatabaseName == "" {
 		err := status.Error(codes.NotFound, "Database name is empty")
 		return nil, err
 	}
-
 	return c.dbClient.CreateDatabase(ctx, db)
-	// if err != nil {
-	// 	log.Fatalf("Error: %s", err)
-	// }
-	//return c.dbClient.Put(ctx, entity)
 }
 
 func (c *Client) Put(ctx context.Context, databaseName string, object interface{}) (id string, err error) {
@@ -95,26 +76,73 @@ func (c *Client) Put(ctx context.Context, databaseName string, object interface{
 	return propaneId.Id, err
 }
 
-func (c *Client) Get(ctx context.Context, id *PropaneId) (entity *PropaneEntity, err error) {
-	if id.DatabaseName == "" {
+func (c *Client) Get(ctx context.Context, databaseName string, id string) (entity interface{}, err error) {
+	if databaseName == "" {
 		err := status.Error(codes.NotFound, "Database name is empty")
 		return nil, err
 	}
-	return c.dbClient.Get(ctx, id)
+
+	propaneId := &PropaneId{}
+	propaneId.DatabaseName = databaseName
+	propaneId.Id = id
+
+	propaneEntity, err := c.dbClient.Get(ctx, propaneId)
+
+	if err != nil {
+		log.Fatalf("Error: %s", err)
+	}
+	//log.Printf("Entity 1: %s", entity3.String())
+
+	any := propaneEntity.Data
+	entity, err = any.UnmarshalNew()
+	if err != nil {
+		log.Fatalf("Error: %s", err)
+	}
+	//any, err := anypb.New(item1)
+	//m := new(propane.TestEntity)
+	// if err := any.UnmarshalTo(m); err != nil {
+	// 	log.Fatalf("Error: %s", err)
+	// 	t.Errorf("Cannot unmarshal to TestEntity")
+	// }
+
+	return entity, err
 }
 
-func (c *Client) Delete(ctx context.Context, id *PropaneId) (statusOut *PropaneStatus, err error) {
-	if id.DatabaseName == "" {
+func (c *Client) Delete(ctx context.Context, databaseName string, id string) (err error) {
+	if databaseName == "" {
 		err := status.Error(codes.NotFound, "Database name is empty")
-		return nil, err
+		return err
 	}
-	return c.dbClient.Delete(ctx, id)
+
+	propaneId := &PropaneId{}
+	propaneId.DatabaseName = databaseName
+	propaneId.Id = id
+
+	_, err = c.dbClient.Delete(ctx, propaneId)
+
+	return err
 }
 
-func (c *Client) Search(ctx context.Context, input *PropaneSearch) (output *PropaneEntities, err error) {
-	if input.DatabaseName == "" {
+func (c *Client) Search(ctx context.Context, databaseName string, entityType string, query string) (output []interface{}, err error) {
+	if databaseName == "" {
 		err := status.Error(codes.NotFound, "Database name is empty")
 		return nil, err
 	}
-	return c.dbClient.Search(ctx, input)
+	input := &PropaneSearch{}
+	input.DatabaseName = databaseName
+	input.EntityType = entityType
+	input.Query = query
+
+	propaneEntities, err := c.dbClient.Search(ctx, input)
+
+	for _, propaneEntity := range propaneEntities.Entities {
+		any := propaneEntity.Data
+		entity, err := any.UnmarshalNew()
+		if err != nil {
+			log.Fatalf("Error: %s", err)
+		}
+		output = append(output, entity)
+	}
+
+	return
 }
