@@ -1,5 +1,4 @@
-
-
+#!/bin/bash
 FILE=./api/propanedb.proto
 if [ -f "$FILE" ]; then
     echo "$FILE exists."

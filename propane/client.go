@@ -3,22 +3,38 @@ package propane
 import (
 	"context"
 
+	filename "github.com/keepeye/logrus-filename"
 	log "github.com/sirupsen/logrus"
-
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
+	anypb "google.golang.org/protobuf/types/known/anypb"
 )
 
+func InitLog(debugMode bool) {
+	if debugMode {
+		filenameHook := filename.NewHook()
+		filenameHook.Field = "line"
+		log.AddHook(filenameHook)
+		log.SetLevel(log.DebugLevel)
+	} else {
+		log.SetLevel(log.WarnLevel)
+
+	}
+
+}
+
 type Client struct {
-	conn     *grpc.ClientConn
-	dbClient DatabaseClient
+	conn         *grpc.ClientConn
+	dbClient     DatabaseClient
+	databaseName string
 }
 
 func Connect(ctx context.Context, serverAddress string) (*Client, error) {
 
 	client := &Client{}
-
+	InitLog(true)
 	//var opts []grpc.DialOption
 	conn, err := grpc.Dial(serverAddress, grpc.WithInsecure())
 	client.conn = conn
@@ -58,12 +74,25 @@ func (c *Client) CreateDatabase(ctx context.Context, db *PropaneDatabase) (statu
 	//return c.dbClient.Put(ctx, entity)
 }
 
-func (c *Client) Put(ctx context.Context, put *PropanePut) (id *PropaneId, err error) {
-	if put.DatabaseName == "" {
+func (c *Client) Put(ctx context.Context, databaseName string, object interface{}) (id string, err error) {
+	if databaseName == "" {
 		err := status.Error(codes.NotFound, "Database name is empty")
-		return nil, err
+		return "", err
 	}
-	return c.dbClient.Put(ctx, put)
+
+	entity1 := &PropaneEntity{}
+	put := &PropanePut{}
+	entity := object.(protoreflect.ProtoMessage)
+	any, err := anypb.New(entity)
+	if err != nil {
+		log.Fatalf("Error: %s", err)
+	}
+	entity1.Data = any
+	put.Entity = entity1
+	put.DatabaseName = databaseName
+	propaneId, err := c.dbClient.Put(ctx, put)
+
+	return propaneId.Id, err
 }
 
 func (c *Client) Get(ctx context.Context, id *PropaneId) (entity *PropaneEntity, err error) {
