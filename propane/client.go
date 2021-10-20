@@ -35,7 +35,7 @@ func Connect(ctx context.Context, serverAddress string) (*Client, error) {
 	conn, err := grpc.Dial(serverAddress, grpc.WithInsecure())
 	client.conn = conn
 	if err != nil {
-		log.Fatalf("Error: %s", err)
+		return nil, err
 	}
 	client.dbClient = NewDatabaseClient(client.conn)
 	return client, err
@@ -68,7 +68,7 @@ func (c *Client) Put(ctx context.Context, databaseName string, object interface{
 	entity := object.(protoreflect.ProtoMessage)
 	any, err := anypb.New(entity)
 	if err != nil {
-		log.Fatalf("Error: %s", err)
+		return "", err
 	}
 	entity1.Data = any
 	put.Entity = entity1
@@ -90,12 +90,12 @@ func (c *Client) Get(ctx context.Context, databaseName string, id string) (entit
 
 	propaneEntity, err := c.dbClient.Get(ctx, propaneId)
 	if err != nil {
-		log.Fatalf("Error: %s", err)
+		return nil, err
 	}
 	any := propaneEntity.Data
 	entity, err = any.UnmarshalNew()
 	if err != nil {
-		log.Fatalf("Error: %s", err)
+		return nil, err
 	}
 	return entity, err
 }
@@ -126,15 +126,18 @@ func (c *Client) Search(ctx context.Context, databaseName string, entityType str
 	input.Query = query
 
 	propaneEntities, err := c.dbClient.Search(ctx, input)
+	if err != nil {
+		return nil, err
+	}
 
 	for _, propaneEntity := range propaneEntities.Entities {
 		any := propaneEntity.Data
 		entity, err := any.UnmarshalNew()
 		if err != nil {
-			log.Fatalf("Error: %s", err)
+			return nil, err
 		}
 		output = append(output, entity)
 	}
 
-	return
+	return output, nil
 }
