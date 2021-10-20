@@ -91,13 +91,7 @@ func TestConnect(t *testing.T) {
 	if err != nil {
 		log.Fatalf("Error: %s", err)
 	}
-
-	db := &propane.PropaneDatabase{}
-	db.DatabaseName = databaseName
-	db.DescriptorSet = fds
-
-	_, err = client.CreateDatabase(ctx, db)
-
+	err = client.CreateDatabase(ctx, databaseName, fds)
 	if err != nil {
 		log.Printf("Error: %s", err)
 	}

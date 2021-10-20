@@ -9,6 +9,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
+	"google.golang.org/protobuf/types/descriptorpb"
 	anypb "google.golang.org/protobuf/types/known/anypb"
 )
 
@@ -29,7 +30,6 @@ type Client struct {
 }
 
 func Connect(ctx context.Context, serverAddress string) (*Client, error) {
-
 	client := &Client{}
 	InitLog(true)
 	conn, err := grpc.Dial(serverAddress, grpc.WithInsecure())
@@ -39,20 +39,22 @@ func Connect(ctx context.Context, serverAddress string) (*Client, error) {
 	}
 	client.dbClient = NewDatabaseClient(client.conn)
 	return client, err
-
 }
 
 func (c *Client) Disconnect(ctx context.Context) error {
 	return c.conn.Close()
 }
 
-// rpc CreateDatabase(PropaneDatabase) returns (PropaneStatus) {}
-func (c *Client) CreateDatabase(ctx context.Context, db *PropaneDatabase) (statusOut *PropaneStatus, err error) {
-	if db.DatabaseName == "" {
+func (c *Client) CreateDatabase(ctx context.Context, databaseName string, fileDescriptorSet *descriptorpb.FileDescriptorSet) (err error) {
+	if databaseName == "" {
 		err := status.Error(codes.NotFound, "Database name is empty")
-		return nil, err
+		return err
 	}
-	return c.dbClient.CreateDatabase(ctx, db)
+	db := &PropaneDatabase{}
+	db.DatabaseName = databaseName
+	db.DescriptorSet = fileDescriptorSet
+	_, err = c.dbClient.CreateDatabase(ctx, db)
+	return err
 }
 
 func (c *Client) Put(ctx context.Context, databaseName string, object interface{}) (id string, err error) {
@@ -87,24 +89,14 @@ func (c *Client) Get(ctx context.Context, databaseName string, id string) (entit
 	propaneId.Id = id
 
 	propaneEntity, err := c.dbClient.Get(ctx, propaneId)
-
 	if err != nil {
 		log.Fatalf("Error: %s", err)
 	}
-	//log.Printf("Entity 1: %s", entity3.String())
-
 	any := propaneEntity.Data
 	entity, err = any.UnmarshalNew()
 	if err != nil {
 		log.Fatalf("Error: %s", err)
 	}
-	//any, err := anypb.New(item1)
-	//m := new(propane.TestEntity)
-	// if err := any.UnmarshalTo(m); err != nil {
-	// 	log.Fatalf("Error: %s", err)
-	// 	t.Errorf("Cannot unmarshal to TestEntity")
-	// }
-
 	return entity, err
 }
 
