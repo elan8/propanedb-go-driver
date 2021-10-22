@@ -7,6 +7,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/types/descriptorpb"
@@ -25,8 +26,9 @@ func InitLog(debugMode bool) {
 }
 
 type Client struct {
-	conn     *grpc.ClientConn
-	dbClient DatabaseClient
+	conn             *grpc.ClientConn
+	dbClient         DatabaseClient
+	selectedDatabase string
 }
 
 func Connect(ctx context.Context, serverAddress string) (*Client, error) {
@@ -45,6 +47,12 @@ func (c *Client) Disconnect(ctx context.Context) error {
 	return c.conn.Close()
 }
 
+func (c *Client) SelectDatabase(ctx context.Context, databaseName string) error {
+	c.selectedDatabase = databaseName
+
+	return nil
+}
+
 func (c *Client) CreateDatabase(ctx context.Context, databaseName string, fileDescriptorSet *descriptorpb.FileDescriptorSet) (err error) {
 	if databaseName == "" {
 		err := status.Error(codes.NotFound, "Database name is empty")
@@ -57,11 +65,9 @@ func (c *Client) CreateDatabase(ctx context.Context, databaseName string, fileDe
 	return err
 }
 
-func (c *Client) Put(ctx context.Context, databaseName string, object interface{}) (id string, err error) {
-	if databaseName == "" {
-		err := status.Error(codes.NotFound, "Database name is empty")
-		return "", err
-	}
+func (c *Client) Put(ctx context.Context, object interface{}) (id string, err error) {
+
+	ctx = metadata.AppendToOutgoingContext(ctx, "database-name", c.selectedDatabase)
 
 	entity1 := &PropaneEntity{}
 	put := &PropanePut{}
@@ -72,20 +78,20 @@ func (c *Client) Put(ctx context.Context, databaseName string, object interface{
 	}
 	entity1.Data = any
 	put.Entity = entity1
-	put.DatabaseName = databaseName
+	//put.DatabaseName = databaseName
 	propaneId, err := c.dbClient.Put(ctx, put)
+	if err != nil {
+		return "", err
+	}
 
 	return propaneId.Id, err
 }
 
-func (c *Client) Get(ctx context.Context, databaseName string, id string) (entity interface{}, err error) {
-	if databaseName == "" {
-		err := status.Error(codes.NotFound, "Database name is empty")
-		return nil, err
-	}
+func (c *Client) Get(ctx context.Context, id string) (entity interface{}, err error) {
+	ctx = metadata.AppendToOutgoingContext(ctx, "database-name", c.selectedDatabase)
 
 	propaneId := &PropaneId{}
-	propaneId.DatabaseName = databaseName
+	//propaneId.DatabaseName = databaseName
 	propaneId.Id = id
 
 	propaneEntity, err := c.dbClient.Get(ctx, propaneId)
@@ -100,14 +106,11 @@ func (c *Client) Get(ctx context.Context, databaseName string, id string) (entit
 	return entity, err
 }
 
-func (c *Client) Delete(ctx context.Context, databaseName string, id string) (err error) {
-	if databaseName == "" {
-		err := status.Error(codes.NotFound, "Database name is empty")
-		return err
-	}
+func (c *Client) Delete(ctx context.Context, id string) (err error) {
+	ctx = metadata.AppendToOutgoingContext(ctx, "database-name", c.selectedDatabase)
 
 	propaneId := &PropaneId{}
-	propaneId.DatabaseName = databaseName
+	//propaneId.DatabaseName = databaseName
 	propaneId.Id = id
 
 	_, err = c.dbClient.Delete(ctx, propaneId)
@@ -115,13 +118,10 @@ func (c *Client) Delete(ctx context.Context, databaseName string, id string) (er
 	return err
 }
 
-func (c *Client) Search(ctx context.Context, databaseName string, entityType string, query string) (output []interface{}, err error) {
-	if databaseName == "" {
-		err := status.Error(codes.NotFound, "Database name is empty")
-		return nil, err
-	}
+func (c *Client) Search(ctx context.Context, entityType string, query string) (output []interface{}, err error) {
+	ctx = metadata.AppendToOutgoingContext(ctx, "database-name", c.selectedDatabase)
 	input := &PropaneSearch{}
-	input.DatabaseName = databaseName
+	//input.DatabaseName = databaseName
 	input.EntityType = entityType
 	input.Query = query
 

@@ -96,10 +96,14 @@ func TestConnect(t *testing.T) {
 		log.Printf("Error: %s", err)
 	}
 
+	err = client.SelectDatabase(ctx, databaseName)
+	if err != nil {
+		log.Printf("Error: %s", err)
+	}
 	//add item 1
 	item1 := &propane.TestEntity{}
 	item1.Description = "Test 1"
-	id1, err := client.Put(ctx, databaseName, item1)
+	id1, err := client.Put(ctx, item1)
 	if err != nil {
 		t.Fatalf("Error: %s", err)
 	}
@@ -108,14 +112,14 @@ func TestConnect(t *testing.T) {
 	//add item 2
 	item2 := &propane.TestEntity{}
 	item2.Description = "Test 2"
-	id2, err := client.Put(ctx, databaseName, item2)
+	id2, err := client.Put(ctx, item2)
 	if err != nil {
 		t.Fatalf("Error: %s", err)
 	}
 	log.Print("Id2=" + id2)
 
 	//get item 1
-	entity3, err := client.Get(ctx, databaseName, id1)
+	entity3, err := client.Get(ctx, id1)
 
 	if err != nil {
 		t.Fatalf("Error: %s", err)
@@ -128,7 +132,7 @@ func TestConnect(t *testing.T) {
 		t.Errorf("expected 'Test 1', got '%s'", m.Description)
 	}
 
-	entities, err := client.Search(ctx, databaseName, "test.TestEntity", "*")
+	entities, err := client.Search(ctx, "test.TestEntity", "*")
 	if err != nil {
 		t.Errorf("Error: %s", err)
 	}
@@ -143,7 +147,7 @@ func TestConnect(t *testing.T) {
 	}
 
 	//delete item 1
-	err = client.Delete(ctx, databaseName, id1)
+	err = client.Delete(ctx, id1)
 	if err != nil {
 		t.Errorf("Error: %s", err)
 	}
