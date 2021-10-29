@@ -118,6 +118,15 @@ func TestConnect(t *testing.T) {
 	}
 	log.Print("Id2=" + id2)
 
+	//update item 1
+	item1.Description = "Test 1: Updated"
+	item1.Id = id1
+	id1a, err := client.Put(ctx, item1)
+	if err != nil {
+		t.Fatalf("Error: %s", err)
+	}
+	log.Print("Id1 updated=" + id1a)
+
 	//get item 1
 	entity3, err := client.Get(ctx, id1)
 
@@ -128,7 +137,7 @@ func TestConnect(t *testing.T) {
 
 	m := entity3.(*propane.TestEntity)
 
-	if m.Description != "Test 1" {
+	if m.Description != item1.Description {
 		t.Errorf("expected 'Test 1', got '%s'", m.Description)
 	}
 
