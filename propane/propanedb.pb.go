@@ -22,6 +22,240 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type PropaneFileChunk struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Data         []byte `protobuf:"bytes,1,opt,name=data,proto3" json:"data,omitempty"`
+	DatabaseName string `protobuf:"bytes,2,opt,name=databaseName,proto3" json:"databaseName,omitempty"`
+}
+
+func (x *PropaneFileChunk) Reset() {
+	*x = PropaneFileChunk{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_propanedb_proto_msgTypes[0]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *PropaneFileChunk) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PropaneFileChunk) ProtoMessage() {}
+
+func (x *PropaneFileChunk) ProtoReflect() protoreflect.Message {
+	mi := &file_api_propanedb_proto_msgTypes[0]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PropaneFileChunk.ProtoReflect.Descriptor instead.
+func (*PropaneFileChunk) Descriptor() ([]byte, []int) {
+	return file_api_propanedb_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *PropaneFileChunk) GetData() []byte {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
+func (x *PropaneFileChunk) GetDatabaseName() string {
+	if x != nil {
+		return x.DatabaseName
+	}
+	return ""
+}
+
+type PropaneBackupRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	DatabaseName string `protobuf:"bytes,1,opt,name=databaseName,proto3" json:"databaseName,omitempty"`
+}
+
+func (x *PropaneBackupRequest) Reset() {
+	*x = PropaneBackupRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_propanedb_proto_msgTypes[1]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *PropaneBackupRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PropaneBackupRequest) ProtoMessage() {}
+
+func (x *PropaneBackupRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_propanedb_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PropaneBackupRequest.ProtoReflect.Descriptor instead.
+func (*PropaneBackupRequest) Descriptor() ([]byte, []int) {
+	return file_api_propanedb_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *PropaneBackupRequest) GetDatabaseName() string {
+	if x != nil {
+		return x.DatabaseName
+	}
+	return ""
+}
+
+type PropaneBackupReply struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Chunk *PropaneFileChunk `protobuf:"bytes,1,opt,name=chunk,proto3" json:"chunk,omitempty"`
+}
+
+func (x *PropaneBackupReply) Reset() {
+	*x = PropaneBackupReply{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_propanedb_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *PropaneBackupReply) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PropaneBackupReply) ProtoMessage() {}
+
+func (x *PropaneBackupReply) ProtoReflect() protoreflect.Message {
+	mi := &file_api_propanedb_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PropaneBackupReply.ProtoReflect.Descriptor instead.
+func (*PropaneBackupReply) Descriptor() ([]byte, []int) {
+	return file_api_propanedb_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *PropaneBackupReply) GetChunk() *PropaneFileChunk {
+	if x != nil {
+		return x.Chunk
+	}
+	return nil
+}
+
+type PropaneRestoreRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Chunk *PropaneFileChunk `protobuf:"bytes,1,opt,name=chunk,proto3" json:"chunk,omitempty"`
+}
+
+func (x *PropaneRestoreRequest) Reset() {
+	*x = PropaneRestoreRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_propanedb_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *PropaneRestoreRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PropaneRestoreRequest) ProtoMessage() {}
+
+func (x *PropaneRestoreRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_propanedb_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PropaneRestoreRequest.ProtoReflect.Descriptor instead.
+func (*PropaneRestoreRequest) Descriptor() ([]byte, []int) {
+	return file_api_propanedb_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *PropaneRestoreRequest) GetChunk() *PropaneFileChunk {
+	if x != nil {
+		return x.Chunk
+	}
+	return nil
+}
+
+type PropaneRestoreReply struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *PropaneRestoreReply) Reset() {
+	*x = PropaneRestoreReply{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_propanedb_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *PropaneRestoreReply) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PropaneRestoreReply) ProtoMessage() {}
+
+func (x *PropaneRestoreReply) ProtoReflect() protoreflect.Message {
+	mi := &file_api_propanedb_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PropaneRestoreReply.ProtoReflect.Descriptor instead.
+func (*PropaneRestoreReply) Descriptor() ([]byte, []int) {
+	return file_api_propanedb_proto_rawDescGZIP(), []int{4}
+}
+
 type PropaneDatabase struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -34,7 +268,7 @@ type PropaneDatabase struct {
 func (x *PropaneDatabase) Reset() {
 	*x = PropaneDatabase{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_propanedb_proto_msgTypes[0]
+		mi := &file_api_propanedb_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -47,7 +281,7 @@ func (x *PropaneDatabase) String() string {
 func (*PropaneDatabase) ProtoMessage() {}
 
 func (x *PropaneDatabase) ProtoReflect() protoreflect.Message {
-	mi := &file_api_propanedb_proto_msgTypes[0]
+	mi := &file_api_propanedb_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -60,7 +294,7 @@ func (x *PropaneDatabase) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PropaneDatabase.ProtoReflect.Descriptor instead.
 func (*PropaneDatabase) Descriptor() ([]byte, []int) {
-	return file_api_propanedb_proto_rawDescGZIP(), []int{0}
+	return file_api_propanedb_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *PropaneDatabase) GetDatabaseName() string {
@@ -88,7 +322,7 @@ type PropaneEntities struct {
 func (x *PropaneEntities) Reset() {
 	*x = PropaneEntities{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_propanedb_proto_msgTypes[1]
+		mi := &file_api_propanedb_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -101,7 +335,7 @@ func (x *PropaneEntities) String() string {
 func (*PropaneEntities) ProtoMessage() {}
 
 func (x *PropaneEntities) ProtoReflect() protoreflect.Message {
-	mi := &file_api_propanedb_proto_msgTypes[1]
+	mi := &file_api_propanedb_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -114,7 +348,7 @@ func (x *PropaneEntities) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PropaneEntities.ProtoReflect.Descriptor instead.
 func (*PropaneEntities) Descriptor() ([]byte, []int) {
-	return file_api_propanedb_proto_rawDescGZIP(), []int{1}
+	return file_api_propanedb_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *PropaneEntities) GetEntities() []*PropaneEntity {
@@ -135,7 +369,7 @@ type PropaneEntity struct {
 func (x *PropaneEntity) Reset() {
 	*x = PropaneEntity{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_propanedb_proto_msgTypes[2]
+		mi := &file_api_propanedb_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -148,7 +382,7 @@ func (x *PropaneEntity) String() string {
 func (*PropaneEntity) ProtoMessage() {}
 
 func (x *PropaneEntity) ProtoReflect() protoreflect.Message {
-	mi := &file_api_propanedb_proto_msgTypes[2]
+	mi := &file_api_propanedb_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -161,7 +395,7 @@ func (x *PropaneEntity) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PropaneEntity.ProtoReflect.Descriptor instead.
 func (*PropaneEntity) Descriptor() ([]byte, []int) {
-	return file_api_propanedb_proto_rawDescGZIP(), []int{2}
+	return file_api_propanedb_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *PropaneEntity) GetData() *anypb.Any {
@@ -182,7 +416,7 @@ type PropaneStatus struct {
 func (x *PropaneStatus) Reset() {
 	*x = PropaneStatus{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_propanedb_proto_msgTypes[3]
+		mi := &file_api_propanedb_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -195,7 +429,7 @@ func (x *PropaneStatus) String() string {
 func (*PropaneStatus) ProtoMessage() {}
 
 func (x *PropaneStatus) ProtoReflect() protoreflect.Message {
-	mi := &file_api_propanedb_proto_msgTypes[3]
+	mi := &file_api_propanedb_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -208,7 +442,7 @@ func (x *PropaneStatus) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PropaneStatus.ProtoReflect.Descriptor instead.
 func (*PropaneStatus) Descriptor() ([]byte, []int) {
-	return file_api_propanedb_proto_rawDescGZIP(), []int{3}
+	return file_api_propanedb_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *PropaneStatus) GetStatusMessage() string {
@@ -230,7 +464,7 @@ type PropanePut struct {
 func (x *PropanePut) Reset() {
 	*x = PropanePut{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_propanedb_proto_msgTypes[4]
+		mi := &file_api_propanedb_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -243,7 +477,7 @@ func (x *PropanePut) String() string {
 func (*PropanePut) ProtoMessage() {}
 
 func (x *PropanePut) ProtoReflect() protoreflect.Message {
-	mi := &file_api_propanedb_proto_msgTypes[4]
+	mi := &file_api_propanedb_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -256,7 +490,7 @@ func (x *PropanePut) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PropanePut.ProtoReflect.Descriptor instead.
 func (*PropanePut) Descriptor() ([]byte, []int) {
-	return file_api_propanedb_proto_rawDescGZIP(), []int{4}
+	return file_api_propanedb_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *PropanePut) GetDatabaseName() string {
@@ -285,7 +519,7 @@ type PropaneId struct {
 func (x *PropaneId) Reset() {
 	*x = PropaneId{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_propanedb_proto_msgTypes[5]
+		mi := &file_api_propanedb_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -298,7 +532,7 @@ func (x *PropaneId) String() string {
 func (*PropaneId) ProtoMessage() {}
 
 func (x *PropaneId) ProtoReflect() protoreflect.Message {
-	mi := &file_api_propanedb_proto_msgTypes[5]
+	mi := &file_api_propanedb_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -311,7 +545,7 @@ func (x *PropaneId) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PropaneId.ProtoReflect.Descriptor instead.
 func (*PropaneId) Descriptor() ([]byte, []int) {
-	return file_api_propanedb_proto_rawDescGZIP(), []int{5}
+	return file_api_propanedb_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *PropaneId) GetDatabaseName() string {
@@ -341,7 +575,7 @@ type PropaneSearch struct {
 func (x *PropaneSearch) Reset() {
 	*x = PropaneSearch{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_propanedb_proto_msgTypes[6]
+		mi := &file_api_propanedb_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -354,7 +588,7 @@ func (x *PropaneSearch) String() string {
 func (*PropaneSearch) ProtoMessage() {}
 
 func (x *PropaneSearch) ProtoReflect() protoreflect.Message {
-	mi := &file_api_propanedb_proto_msgTypes[6]
+	mi := &file_api_propanedb_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -367,7 +601,7 @@ func (x *PropaneSearch) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PropaneSearch.ProtoReflect.Descriptor instead.
 func (*PropaneSearch) Descriptor() ([]byte, []int) {
-	return file_api_propanedb_proto_rawDescGZIP(), []int{6}
+	return file_api_propanedb_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *PropaneSearch) GetDatabaseName() string {
@@ -399,7 +633,26 @@ var file_api_propanedb_proto_rawDesc = []byte{
 	0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2f,
 	0x61, 0x6e, 0x79, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x20, 0x67, 0x6f, 0x6f, 0x67, 0x6c,
 	0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2f, 0x64, 0x65, 0x73, 0x63, 0x72,
-	0x69, 0x70, 0x74, 0x6f, 0x72, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x80, 0x01, 0x0a, 0x0f,
+	0x69, 0x70, 0x74, 0x6f, 0x72, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x4a, 0x0a, 0x10, 0x50,
+	0x72, 0x6f, 0x70, 0x61, 0x6e, 0x65, 0x46, 0x69, 0x6c, 0x65, 0x43, 0x68, 0x75, 0x6e, 0x6b, 0x12,
+	0x12, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x04, 0x64,
+	0x61, 0x74, 0x61, 0x12, 0x22, 0x0a, 0x0c, 0x64, 0x61, 0x74, 0x61, 0x62, 0x61, 0x73, 0x65, 0x4e,
+	0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x64, 0x61, 0x74, 0x61, 0x62,
+	0x61, 0x73, 0x65, 0x4e, 0x61, 0x6d, 0x65, 0x22, 0x3a, 0x0a, 0x14, 0x50, 0x72, 0x6f, 0x70, 0x61,
+	0x6e, 0x65, 0x42, 0x61, 0x63, 0x6b, 0x75, 0x70, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12,
+	0x22, 0x0a, 0x0c, 0x64, 0x61, 0x74, 0x61, 0x62, 0x61, 0x73, 0x65, 0x4e, 0x61, 0x6d, 0x65, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x64, 0x61, 0x74, 0x61, 0x62, 0x61, 0x73, 0x65, 0x4e,
+	0x61, 0x6d, 0x65, 0x22, 0x45, 0x0a, 0x12, 0x50, 0x72, 0x6f, 0x70, 0x61, 0x6e, 0x65, 0x42, 0x61,
+	0x63, 0x6b, 0x75, 0x70, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x12, 0x2f, 0x0a, 0x05, 0x63, 0x68, 0x75,
+	0x6e, 0x6b, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x70, 0x72, 0x6f, 0x70, 0x61,
+	0x6e, 0x65, 0x2e, 0x50, 0x72, 0x6f, 0x70, 0x61, 0x6e, 0x65, 0x46, 0x69, 0x6c, 0x65, 0x43, 0x68,
+	0x75, 0x6e, 0x6b, 0x52, 0x05, 0x63, 0x68, 0x75, 0x6e, 0x6b, 0x22, 0x48, 0x0a, 0x15, 0x50, 0x72,
+	0x6f, 0x70, 0x61, 0x6e, 0x65, 0x52, 0x65, 0x73, 0x74, 0x6f, 0x72, 0x65, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x12, 0x2f, 0x0a, 0x05, 0x63, 0x68, 0x75, 0x6e, 0x6b, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x0b, 0x32, 0x19, 0x2e, 0x70, 0x72, 0x6f, 0x70, 0x61, 0x6e, 0x65, 0x2e, 0x50, 0x72, 0x6f,
+	0x70, 0x61, 0x6e, 0x65, 0x46, 0x69, 0x6c, 0x65, 0x43, 0x68, 0x75, 0x6e, 0x6b, 0x52, 0x05, 0x63,
+	0x68, 0x75, 0x6e, 0x6b, 0x22, 0x15, 0x0a, 0x13, 0x50, 0x72, 0x6f, 0x70, 0x61, 0x6e, 0x65, 0x52,
+	0x65, 0x73, 0x74, 0x6f, 0x72, 0x65, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x22, 0x80, 0x01, 0x0a, 0x0f,
 	0x50, 0x72, 0x6f, 0x70, 0x61, 0x6e, 0x65, 0x44, 0x61, 0x74, 0x61, 0x62, 0x61, 0x73, 0x65, 0x12,
 	0x22, 0x0a, 0x0c, 0x64, 0x61, 0x74, 0x61, 0x62, 0x61, 0x73, 0x65, 0x4e, 0x61, 0x6d, 0x65, 0x18,
 	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x64, 0x61, 0x74, 0x61, 0x62, 0x61, 0x73, 0x65, 0x4e,
@@ -436,7 +689,7 @@ var file_api_propanedb_proto_rawDesc = []byte{
 	0x1e, 0x0a, 0x0a, 0x65, 0x6e, 0x74, 0x69, 0x74, 0x79, 0x54, 0x79, 0x70, 0x65, 0x18, 0x02, 0x20,
 	0x01, 0x28, 0x09, 0x52, 0x0a, 0x65, 0x6e, 0x74, 0x69, 0x74, 0x79, 0x54, 0x79, 0x70, 0x65, 0x12,
 	0x14, 0x0a, 0x05, 0x71, 0x75, 0x65, 0x72, 0x79, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05,
-	0x71, 0x75, 0x65, 0x72, 0x79, 0x32, 0xad, 0x02, 0x0a, 0x08, 0x44, 0x61, 0x74, 0x61, 0x62, 0x61,
+	0x71, 0x75, 0x65, 0x72, 0x79, 0x32, 0xc4, 0x03, 0x0a, 0x08, 0x44, 0x61, 0x74, 0x61, 0x62, 0x61,
 	0x73, 0x65, 0x12, 0x44, 0x0a, 0x0e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x44, 0x61, 0x74, 0x61,
 	0x62, 0x61, 0x73, 0x65, 0x12, 0x18, 0x2e, 0x70, 0x72, 0x6f, 0x70, 0x61, 0x6e, 0x65, 0x2e, 0x50,
 	0x72, 0x6f, 0x70, 0x61, 0x6e, 0x65, 0x44, 0x61, 0x74, 0x61, 0x62, 0x61, 0x73, 0x65, 0x1a, 0x16,
@@ -455,8 +708,17 @@ var file_api_propanedb_proto_rawDesc = []byte{
 	0x68, 0x12, 0x16, 0x2e, 0x70, 0x72, 0x6f, 0x70, 0x61, 0x6e, 0x65, 0x2e, 0x50, 0x72, 0x6f, 0x70,
 	0x61, 0x6e, 0x65, 0x53, 0x65, 0x61, 0x72, 0x63, 0x68, 0x1a, 0x18, 0x2e, 0x70, 0x72, 0x6f, 0x70,
 	0x61, 0x6e, 0x65, 0x2e, 0x50, 0x72, 0x6f, 0x70, 0x61, 0x6e, 0x65, 0x45, 0x6e, 0x74, 0x69, 0x74,
-	0x69, 0x65, 0x73, 0x22, 0x00, 0x42, 0x0a, 0x5a, 0x08, 0x70, 0x72, 0x6f, 0x70, 0x61, 0x6e, 0x65,
-	0x2f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x69, 0x65, 0x73, 0x22, 0x00, 0x12, 0x48, 0x0a, 0x06, 0x42, 0x61, 0x63, 0x6b, 0x75, 0x70, 0x12,
+	0x1d, 0x2e, 0x70, 0x72, 0x6f, 0x70, 0x61, 0x6e, 0x65, 0x2e, 0x50, 0x72, 0x6f, 0x70, 0x61, 0x6e,
+	0x65, 0x42, 0x61, 0x63, 0x6b, 0x75, 0x70, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1b,
+	0x2e, 0x70, 0x72, 0x6f, 0x70, 0x61, 0x6e, 0x65, 0x2e, 0x50, 0x72, 0x6f, 0x70, 0x61, 0x6e, 0x65,
+	0x42, 0x61, 0x63, 0x6b, 0x75, 0x70, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x22, 0x00, 0x30, 0x01, 0x12,
+	0x4b, 0x0a, 0x07, 0x52, 0x65, 0x73, 0x74, 0x6f, 0x72, 0x65, 0x12, 0x1e, 0x2e, 0x70, 0x72, 0x6f,
+	0x70, 0x61, 0x6e, 0x65, 0x2e, 0x50, 0x72, 0x6f, 0x70, 0x61, 0x6e, 0x65, 0x52, 0x65, 0x73, 0x74,
+	0x6f, 0x72, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1c, 0x2e, 0x70, 0x72, 0x6f,
+	0x70, 0x61, 0x6e, 0x65, 0x2e, 0x50, 0x72, 0x6f, 0x70, 0x61, 0x6e, 0x65, 0x52, 0x65, 0x73, 0x74,
+	0x6f, 0x72, 0x65, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x22, 0x00, 0x28, 0x01, 0x42, 0x0a, 0x5a, 0x08,
+	0x70, 0x72, 0x6f, 0x70, 0x61, 0x6e, 0x65, 0x2f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -471,38 +733,49 @@ func file_api_propanedb_proto_rawDescGZIP() []byte {
 	return file_api_propanedb_proto_rawDescData
 }
 
-var file_api_propanedb_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_api_propanedb_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
 var file_api_propanedb_proto_goTypes = []interface{}{
-	(*PropaneDatabase)(nil),                // 0: propane.PropaneDatabase
-	(*PropaneEntities)(nil),                // 1: propane.PropaneEntities
-	(*PropaneEntity)(nil),                  // 2: propane.PropaneEntity
-	(*PropaneStatus)(nil),                  // 3: propane.PropaneStatus
-	(*PropanePut)(nil),                     // 4: propane.PropanePut
-	(*PropaneId)(nil),                      // 5: propane.PropaneId
-	(*PropaneSearch)(nil),                  // 6: propane.PropaneSearch
-	(*descriptorpb.FileDescriptorSet)(nil), // 7: google.protobuf.FileDescriptorSet
-	(*anypb.Any)(nil),                      // 8: google.protobuf.Any
+	(*PropaneFileChunk)(nil),               // 0: propane.PropaneFileChunk
+	(*PropaneBackupRequest)(nil),           // 1: propane.PropaneBackupRequest
+	(*PropaneBackupReply)(nil),             // 2: propane.PropaneBackupReply
+	(*PropaneRestoreRequest)(nil),          // 3: propane.PropaneRestoreRequest
+	(*PropaneRestoreReply)(nil),            // 4: propane.PropaneRestoreReply
+	(*PropaneDatabase)(nil),                // 5: propane.PropaneDatabase
+	(*PropaneEntities)(nil),                // 6: propane.PropaneEntities
+	(*PropaneEntity)(nil),                  // 7: propane.PropaneEntity
+	(*PropaneStatus)(nil),                  // 8: propane.PropaneStatus
+	(*PropanePut)(nil),                     // 9: propane.PropanePut
+	(*PropaneId)(nil),                      // 10: propane.PropaneId
+	(*PropaneSearch)(nil),                  // 11: propane.PropaneSearch
+	(*descriptorpb.FileDescriptorSet)(nil), // 12: google.protobuf.FileDescriptorSet
+	(*anypb.Any)(nil),                      // 13: google.protobuf.Any
 }
 var file_api_propanedb_proto_depIdxs = []int32{
-	7, // 0: propane.PropaneDatabase.descriptor_set:type_name -> google.protobuf.FileDescriptorSet
-	2, // 1: propane.PropaneEntities.entities:type_name -> propane.PropaneEntity
-	8, // 2: propane.PropaneEntity.data:type_name -> google.protobuf.Any
-	2, // 3: propane.PropanePut.entity:type_name -> propane.PropaneEntity
-	0, // 4: propane.Database.CreateDatabase:input_type -> propane.PropaneDatabase
-	4, // 5: propane.Database.Put:input_type -> propane.PropanePut
-	5, // 6: propane.Database.Get:input_type -> propane.PropaneId
-	5, // 7: propane.Database.Delete:input_type -> propane.PropaneId
-	6, // 8: propane.Database.Search:input_type -> propane.PropaneSearch
-	3, // 9: propane.Database.CreateDatabase:output_type -> propane.PropaneStatus
-	5, // 10: propane.Database.Put:output_type -> propane.PropaneId
-	2, // 11: propane.Database.Get:output_type -> propane.PropaneEntity
-	3, // 12: propane.Database.Delete:output_type -> propane.PropaneStatus
-	1, // 13: propane.Database.Search:output_type -> propane.PropaneEntities
-	9, // [9:14] is the sub-list for method output_type
-	4, // [4:9] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	0,  // 0: propane.PropaneBackupReply.chunk:type_name -> propane.PropaneFileChunk
+	0,  // 1: propane.PropaneRestoreRequest.chunk:type_name -> propane.PropaneFileChunk
+	12, // 2: propane.PropaneDatabase.descriptor_set:type_name -> google.protobuf.FileDescriptorSet
+	7,  // 3: propane.PropaneEntities.entities:type_name -> propane.PropaneEntity
+	13, // 4: propane.PropaneEntity.data:type_name -> google.protobuf.Any
+	7,  // 5: propane.PropanePut.entity:type_name -> propane.PropaneEntity
+	5,  // 6: propane.Database.CreateDatabase:input_type -> propane.PropaneDatabase
+	9,  // 7: propane.Database.Put:input_type -> propane.PropanePut
+	10, // 8: propane.Database.Get:input_type -> propane.PropaneId
+	10, // 9: propane.Database.Delete:input_type -> propane.PropaneId
+	11, // 10: propane.Database.Search:input_type -> propane.PropaneSearch
+	1,  // 11: propane.Database.Backup:input_type -> propane.PropaneBackupRequest
+	3,  // 12: propane.Database.Restore:input_type -> propane.PropaneRestoreRequest
+	8,  // 13: propane.Database.CreateDatabase:output_type -> propane.PropaneStatus
+	10, // 14: propane.Database.Put:output_type -> propane.PropaneId
+	7,  // 15: propane.Database.Get:output_type -> propane.PropaneEntity
+	8,  // 16: propane.Database.Delete:output_type -> propane.PropaneStatus
+	6,  // 17: propane.Database.Search:output_type -> propane.PropaneEntities
+	2,  // 18: propane.Database.Backup:output_type -> propane.PropaneBackupReply
+	4,  // 19: propane.Database.Restore:output_type -> propane.PropaneRestoreReply
+	13, // [13:20] is the sub-list for method output_type
+	6,  // [6:13] is the sub-list for method input_type
+	6,  // [6:6] is the sub-list for extension type_name
+	6,  // [6:6] is the sub-list for extension extendee
+	0,  // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_api_propanedb_proto_init() }
@@ -512,7 +785,7 @@ func file_api_propanedb_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_api_propanedb_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*PropaneDatabase); i {
+			switch v := v.(*PropaneFileChunk); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -524,7 +797,7 @@ func file_api_propanedb_proto_init() {
 			}
 		}
 		file_api_propanedb_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*PropaneEntities); i {
+			switch v := v.(*PropaneBackupRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -536,7 +809,7 @@ func file_api_propanedb_proto_init() {
 			}
 		}
 		file_api_propanedb_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*PropaneEntity); i {
+			switch v := v.(*PropaneBackupReply); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -548,7 +821,7 @@ func file_api_propanedb_proto_init() {
 			}
 		}
 		file_api_propanedb_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*PropaneStatus); i {
+			switch v := v.(*PropaneRestoreRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -560,7 +833,7 @@ func file_api_propanedb_proto_init() {
 			}
 		}
 		file_api_propanedb_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*PropanePut); i {
+			switch v := v.(*PropaneRestoreReply); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -572,7 +845,7 @@ func file_api_propanedb_proto_init() {
 			}
 		}
 		file_api_propanedb_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*PropaneId); i {
+			switch v := v.(*PropaneDatabase); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -584,6 +857,66 @@ func file_api_propanedb_proto_init() {
 			}
 		}
 		file_api_propanedb_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*PropaneEntities); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_propanedb_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*PropaneEntity); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_propanedb_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*PropaneStatus); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_propanedb_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*PropanePut); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_propanedb_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*PropaneId); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_propanedb_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*PropaneSearch); i {
 			case 0:
 				return &v.state
@@ -602,7 +935,7 @@ func file_api_propanedb_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_api_propanedb_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   7,
+			NumMessages:   12,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

@@ -2,6 +2,8 @@
 FILE=./api/propanedb.proto
 if [ -f "$FILE" ]; then
     echo "$FILE exists."
+    wget https://raw.githubusercontent.com/elan8/propanedb/master/protos/propanedb.proto -O ./api/propanedb.proto
+
 else 
     echo "$FILE does not exist."
     wget https://raw.githubusercontent.com/elan8/propanedb/master/protos/propanedb.proto -O ./api/propanedb.proto
@@ -10,6 +12,8 @@ fi
 FILE=./api/test.proto
 if [ -f "$FILE" ]; then
     echo "$FILE exists."
+    wget https://raw.githubusercontent.com/elan8/propanedb/master/protos/test.proto -O ./api/test.proto
+
 else 
     echo "$FILE does not exist."
     wget https://raw.githubusercontent.com/elan8/propanedb/master/protos/test.proto -O ./api/test.proto
@@ -23,4 +27,4 @@ docker run --rm -v $(pwd):$(pwd) -w $(pwd) jevon82/golang-builder-alpine  \
 
 # update file ownership
 docker run --rm -v $(pwd):$(pwd) -w $(pwd) jevon82/golang-builder-alpine  \
-/bin/sh -c "chown -R $(id -u):$(id -g) pb"
+/bin/sh -c "chown -R $(id -u):$(id -g) propane"

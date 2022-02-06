@@ -1,5 +1,3 @@
-
-
 syntax = "proto3";
 
 import "google/protobuf/any.proto";
@@ -15,6 +13,30 @@ service Database {
   rpc Get (PropaneId) returns (PropaneEntity) {}
   rpc Delete (PropaneId) returns (PropaneStatus) {}
   rpc Search (PropaneSearch) returns (PropaneEntities) {}
+
+  rpc Backup (PropaneBackupRequest) returns (stream PropaneBackupReply) {}
+  rpc Restore (stream PropaneRestoreRequest) returns (PropaneRestoreReply) {}
+}
+
+message PropaneFileChunk{
+  bytes data =1;
+  string databaseName = 2;
+}
+
+message PropaneBackupRequest{
+  string databaseName = 1;
+}
+
+message PropaneBackupReply{
+    PropaneFileChunk chunk = 1;
+}
+
+message PropaneRestoreRequest{
+    PropaneFileChunk chunk = 1;
+}
+
+message PropaneRestoreReply{
+
 }
 
 message PropaneDatabase{

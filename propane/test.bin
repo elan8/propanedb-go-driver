@@ -1,8 +1,16 @@
 
-j
+’
 api/test.prototest">
 
 TestEntity
 id (	Rid 
-description (	RdescriptionB
+description (	Rdescription"R
+Book
+id (	Rid
+title (	Rtitle$
+author (2.test.AuthorRauthor"R
+Author
+id (	Rid
+	firstName (	R	firstName
+lastName (	RlastNameB
 Zpropane/bproto3

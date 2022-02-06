@@ -23,6 +23,8 @@ type DatabaseClient interface {
 	Get(ctx context.Context, in *PropaneId, opts ...grpc.CallOption) (*PropaneEntity, error)
 	Delete(ctx context.Context, in *PropaneId, opts ...grpc.CallOption) (*PropaneStatus, error)
 	Search(ctx context.Context, in *PropaneSearch, opts ...grpc.CallOption) (*PropaneEntities, error)
+	Backup(ctx context.Context, in *PropaneBackupRequest, opts ...grpc.CallOption) (Database_BackupClient, error)
+	Restore(ctx context.Context, opts ...grpc.CallOption) (Database_RestoreClient, error)
 }
 
 type databaseClient struct {
@@ -78,6 +80,72 @@ func (c *databaseClient) Search(ctx context.Context, in *PropaneSearch, opts ...
 	return out, nil
 }
 
+func (c *databaseClient) Backup(ctx context.Context, in *PropaneBackupRequest, opts ...grpc.CallOption) (Database_BackupClient, error) {
+	stream, err := c.cc.NewStream(ctx, &Database_ServiceDesc.Streams[0], "/propane.Database/Backup", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &databaseBackupClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type Database_BackupClient interface {
+	Recv() (*PropaneBackupReply, error)
+	grpc.ClientStream
+}
+
+type databaseBackupClient struct {
+	grpc.ClientStream
+}
+
+func (x *databaseBackupClient) Recv() (*PropaneBackupReply, error) {
+	m := new(PropaneBackupReply)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *databaseClient) Restore(ctx context.Context, opts ...grpc.CallOption) (Database_RestoreClient, error) {
+	stream, err := c.cc.NewStream(ctx, &Database_ServiceDesc.Streams[1], "/propane.Database/Restore", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &databaseRestoreClient{stream}
+	return x, nil
+}
+
+type Database_RestoreClient interface {
+	Send(*PropaneRestoreRequest) error
+	CloseAndRecv() (*PropaneRestoreReply, error)
+	grpc.ClientStream
+}
+
+type databaseRestoreClient struct {
+	grpc.ClientStream
+}
+
+func (x *databaseRestoreClient) Send(m *PropaneRestoreRequest) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *databaseRestoreClient) CloseAndRecv() (*PropaneRestoreReply, error) {
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	m := new(PropaneRestoreReply)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // DatabaseServer is the server API for Database service.
 // All implementations must embed UnimplementedDatabaseServer
 // for forward compatibility
@@ -87,6 +155,8 @@ type DatabaseServer interface {
 	Get(context.Context, *PropaneId) (*PropaneEntity, error)
 	Delete(context.Context, *PropaneId) (*PropaneStatus, error)
 	Search(context.Context, *PropaneSearch) (*PropaneEntities, error)
+	Backup(*PropaneBackupRequest, Database_BackupServer) error
+	Restore(Database_RestoreServer) error
 	mustEmbedUnimplementedDatabaseServer()
 }
 
@@ -108,6 +178,12 @@ func (UnimplementedDatabaseServer) Delete(context.Context, *PropaneId) (*Propane
 }
 func (UnimplementedDatabaseServer) Search(context.Context, *PropaneSearch) (*PropaneEntities, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Search not implemented")
+}
+func (UnimplementedDatabaseServer) Backup(*PropaneBackupRequest, Database_BackupServer) error {
+	return status.Errorf(codes.Unimplemented, "method Backup not implemented")
+}
+func (UnimplementedDatabaseServer) Restore(Database_RestoreServer) error {
+	return status.Errorf(codes.Unimplemented, "method Restore not implemented")
 }
 func (UnimplementedDatabaseServer) mustEmbedUnimplementedDatabaseServer() {}
 
@@ -212,6 +288,53 @@ func _Database_Search_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Database_Backup_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(PropaneBackupRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(DatabaseServer).Backup(m, &databaseBackupServer{stream})
+}
+
+type Database_BackupServer interface {
+	Send(*PropaneBackupReply) error
+	grpc.ServerStream
+}
+
+type databaseBackupServer struct {
+	grpc.ServerStream
+}
+
+func (x *databaseBackupServer) Send(m *PropaneBackupReply) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func _Database_Restore_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(DatabaseServer).Restore(&databaseRestoreServer{stream})
+}
+
+type Database_RestoreServer interface {
+	SendAndClose(*PropaneRestoreReply) error
+	Recv() (*PropaneRestoreRequest, error)
+	grpc.ServerStream
+}
+
+type databaseRestoreServer struct {
+	grpc.ServerStream
+}
+
+func (x *databaseRestoreServer) SendAndClose(m *PropaneRestoreReply) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *databaseRestoreServer) Recv() (*PropaneRestoreRequest, error) {
+	m := new(PropaneRestoreRequest)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // Database_ServiceDesc is the grpc.ServiceDesc for Database service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -240,6 +363,17 @@ var Database_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Database_Search_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "Backup",
+			Handler:       _Database_Backup_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "Restore",
+			Handler:       _Database_Restore_Handler,
+			ClientStreams: true,
+		},
+	},
 	Metadata: "api/propanedb.proto",
 }
